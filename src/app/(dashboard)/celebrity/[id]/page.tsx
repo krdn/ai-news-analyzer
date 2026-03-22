@@ -31,7 +31,7 @@ export default function CelebrityDetailPage({
     recentComments,
     isLoading: sentimentLoading,
   } = useSentiment(id);
-  const { data: events } = useEvents(id);
+  const { data: eventsData } = useEvents(id);
 
   // PDF 리포트 다운로드
   const handleDownloadReport = useCallback(() => {
@@ -58,14 +58,15 @@ export default function CelebrityDetailPage({
 
   // 이벤트 데이터를 SentimentChart에 전달할 형태로 변환
   const eventMarkers = useMemo(() => {
-    if (!events) return undefined;
-    return events.map((e) => ({
+    const events = eventsData?.events;
+    if (!events || !Array.isArray(events)) return undefined;
+    return events.map((e: any) => ({
       periodStart: new Date(e.eventDate).toISOString(),
       title: e.title,
       sentimentAfter: e.sentimentAfter,
       sentimentBefore: e.sentimentBefore,
     }));
-  }, [events]);
+  }, [eventsData]);
 
   if (celebLoading) {
     return (
@@ -138,14 +139,14 @@ export default function CelebrityDetailPage({
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              {!events || events.length === 0 ? (
+              {!eventsData?.events || eventsData.events.length === 0 ? (
                 <p className="px-4 py-8 text-center text-sm text-zinc-500">
                   감지된 이벤트가 없습니다
                 </p>
               ) : (
                 <ScrollArea className="h-[400px]">
                   <div className="space-y-3 p-4">
-                    {events.map((event) => {
+                    {eventsData.events.map((event: any) => {
                       const dropped =
                         event.sentimentAfter < event.sentimentBefore;
                       return (
