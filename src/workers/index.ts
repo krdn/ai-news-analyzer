@@ -433,6 +433,8 @@ async function shutdown() {
   ]);
 
   // Playwright 브라우저 정리
+  const { closeNaverBrowser } = await import("./crawler/naver");
+  await closeNaverBrowser();
   await dcinsidePlugin.closeBrowser();
   console.log("[Worker] Playwright 브라우저 정리 완료");
 

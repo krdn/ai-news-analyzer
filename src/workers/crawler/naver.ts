@@ -114,45 +114,112 @@ export async function fetchNaverNews(
   return parseNaverSearchResponse(data, celebrityId);
 }
 
-/** 네이버 기사의 댓글을 가져온다 (비공식 API) */
+/** 네이버 뉴스 URL을 네이버 뉴스 기사 URL로 변환 */
+function toNaverNewsUrl(url: string): string | null {
+  // 이미 n.news.naver.com URL이면 그대로 사용
+  if (url.includes("n.news.naver.com")) return url;
+  // news.naver.com URL이면 변환
+  if (url.includes("news.naver.com")) return url;
+  // 외부 링크는 네이버 뉴스 댓글 수집 불가
+  return null;
+}
+
+/** Playwright를 사용하여 네이버 뉴스 댓글을 수집한다 */
+let _browser: any = null;
+
+async function getBrowser() {
+  if (!_browser) {
+    const { chromium } = await import("playwright");
+    _browser = await chromium.launch({ headless: true });
+  }
+  return _browser;
+}
+
 export async function fetchNaverComments(
   articleUrl: string
 ): Promise<ParsedComment[]> {
-  // 네이버 뉴스 URL에서 oid(언론사 ID)와 aid(기사 ID)를 추출
-  const match = articleUrl.match(/\/article\/(\d+)\/(\d+)/);
-  if (!match) {
-    return [];
-  }
-
-  const [, oid, aid] = match;
+  const newsUrl = toNaverNewsUrl(articleUrl);
+  if (!newsUrl) return [];
 
   try {
-    const { data } = await axios.get(
-      "https://apis.naver.com/commentBox/cbox/web_naver_list_jsonp.json",
-      {
-        params: {
-          ticket: "news",
-          templateId: "default_society",
-          pool: "cbox5",
-          lang: "ko",
-          country: "KR",
-          objectId: `news${oid},${aid}`,
-          pageSize: 50,
-          page: 1,
-          sort: "FAVORITE",
-        },
-        headers: {
-          Referer: articleUrl,
-        },
-      }
-    );
+    const browser = await getBrowser();
+    const page = await browser.newPage({
+      userAgent:
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    });
 
-    const comments = data?.result?.commentList ?? [];
-    return parseNaverComments(comments);
-  } catch {
-    // 댓글 API 실패 시 빈 배열 반환 (기사는 정상 처리)
-    console.warn(`댓글 가져오기 실패: ${articleUrl}`);
+    await page.goto(newsUrl, { waitUntil: "domcontentloaded", timeout: 15000 });
+
+    // 댓글 영역이 로드될 때까지 대기 (최대 5초)
+    try {
+      await page.waitForSelector(".u_cbox_comment_box", { timeout: 5000 });
+    } catch {
+      // 댓글 영역이 없는 기사 (댓글 미제공)
+      await page.close();
+      return [];
+    }
+
+    // 댓글 데이터 추출
+    const rawComments = await page.evaluate(() => {
+      const commentElements = document.querySelectorAll(
+        ".u_cbox_comment_box .u_cbox_area"
+      );
+      const results: Array<{
+        contents: string;
+        userName: string;
+        sympathyCount: number;
+        antipathyCount: number;
+        modTime: string;
+      }> = [];
+
+      commentElements.forEach((el) => {
+        const content =
+          el.querySelector(".u_cbox_contents")?.textContent?.trim() ?? "";
+        const author =
+          el.querySelector(".u_cbox_nick")?.textContent?.trim() ?? "익명";
+        const likesText =
+          el.querySelector(".u_cbox_cnt_recomm")?.textContent?.trim() ?? "0";
+        const dislikesText =
+          el.querySelector(".u_cbox_cnt_unrecomm")?.textContent?.trim() ?? "0";
+        const dateText =
+          el.querySelector(".u_cbox_date")?.getAttribute("data-value") ??
+          el.querySelector(".u_cbox_date")?.textContent?.trim() ??
+          "";
+
+        if (content) {
+          results.push({
+            contents: content,
+            userName: author,
+            sympathyCount: parseInt(likesText) || 0,
+            antipathyCount: parseInt(dislikesText) || 0,
+            modTime: dateText,
+          });
+        }
+      });
+
+      return results;
+    });
+
+    await page.close();
+
+    if (rawComments.length > 0) {
+      console.log(
+        `[Naver] 댓글 ${rawComments.length}개 수집: ${newsUrl.substring(0, 60)}...`
+      );
+    }
+
+    return parseNaverComments(rawComments);
+  } catch (err) {
+    console.warn(`댓글 가져오기 실패: ${articleUrl}`, (err as Error).message);
     return [];
+  }
+}
+
+/** Playwright 브라우저 정리 */
+export async function closeNaverBrowser() {
+  if (_browser) {
+    await _browser.close();
+    _browser = null;
   }
 }
 
