@@ -1,7 +1,8 @@
 "use client";
 
-import { use, useMemo } from "react";
+import { use, useMemo, useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { FileDown } from "lucide-react";
 import { CATEGORY_LABELS } from "@/entities/celebrity";
 import { useCelebrity } from "@/entities/celebrity/api/use-celebrities";
 import { useEvents } from "@/entities/event/api/use-events";
@@ -30,6 +32,11 @@ export default function CelebrityDetailPage({
     isLoading: sentimentLoading,
   } = useSentiment(id);
   const { data: events } = useEvents(id);
+
+  // PDF 리포트 다운로드
+  const handleDownloadReport = useCallback(() => {
+    window.open(`/api/report/${id}?days=30`, "_blank");
+  }, [id]);
 
   // 스냅샷의 topTopics를 집계하여 주제별 평균 점수 계산
   const topicScores = useMemo(() => {
@@ -78,13 +85,22 @@ export default function CelebrityDetailPage({
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      {/* 헤더: 이름 + 카테고리 배지 */}
+      {/* 헤더: 이름 + 카테고리 배지 + 리포트 다운로드 */}
       <div className="space-y-2">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-zinc-100">{celebrity.name}</h1>
           <Badge variant="secondary" className="text-xs">
             {CATEGORY_LABELS[celebrity.category]}
           </Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleDownloadReport}
+            className="ml-auto"
+          >
+            <FileDown className="mr-1.5 h-4 w-4" />
+            리포트 다운로드
+          </Button>
         </div>
 
         {/* 별칭 표시 */}
