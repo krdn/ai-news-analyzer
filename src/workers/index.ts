@@ -16,6 +16,7 @@ import { DcinsideCrawlerPlugin } from "./crawler/dcinside";
 import { analyzeSentiment } from "./analyzer/sentiment";
 import { processDeepAnalysisBatch } from "./analyzer/deep-analysis";
 import { aggregateComments } from "./snapshot/aggregator";
+import { detectSentimentAnomaly } from "./event-detector";
 import type { SourceType } from "@prisma/client";
 
 // --- 크롤러 플러그인 등록 ---
@@ -238,6 +239,15 @@ const snapshotWorker = new Worker(
         topTopics: aggregation.topTopics,
       },
     });
+
+    // 스냅샷 생성 후 감성 이상치 감지
+    const celebrity = await prisma.celebrity.findUnique({
+      where: { id: celebrityId },
+      select: { name: true },
+    });
+    if (celebrity) {
+      await detectSentimentAnomaly(celebrityId, celebrity.name);
+    }
 
     console.log(
       `[Snapshot] 스냅샷 완료: ${celebrityId} (${aggregation.totalComments}개 댓글)`
