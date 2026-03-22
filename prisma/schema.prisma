@@ -92,6 +92,7 @@ model Article {
   comments  Comment[]
 
   @@index([celebrityId, publishedAt])
+  @@index([sourceType, collectedAt])
   @@map("articles")
 }
 
@@ -111,7 +112,7 @@ model Comment {
 
   article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
 
-  @@index([articleId])
+  @@index([articleId, publishedAt])
   @@index([sentimentScore])
   @@index([publishedAt])
   @@map("comments")

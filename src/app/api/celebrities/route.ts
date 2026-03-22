@@ -23,6 +23,16 @@ export async function GET(request: NextRequest) {
   const celebrities = await prisma.celebrity.findMany({
     where,
     orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      aliases: true,
+      category: true,
+      profileImage: true,
+      description: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 
   return NextResponse.json(celebrities);
