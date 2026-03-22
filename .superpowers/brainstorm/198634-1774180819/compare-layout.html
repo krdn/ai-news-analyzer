@@ -1,0 +1,117 @@
+<h2>셀럽 비교 페이지 — 시각화 구성</h2>
+<p class="subtitle">2~4명의 셀럽을 나란히 비교할 때 어떤 조합이 좋을까요?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>감성 추이 오버레이 + 요약 카드</h3>
+      <p>하나의 라인 차트에 셀럽별 감성 추이를 색상으로 구분. 상단에 각 셀럽의 현재 감성 점수/댓글 수 요약 카드.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">비교 대시보드</div>
+        <div class="mockup-body" style="padding:16px">
+          <div style="display:flex;gap:12px;margin-bottom:16px">
+            <div style="flex:1;padding:12px;border:1px solid #3f3f46;border-radius:8px;text-align:center">
+              <div style="color:#3b82f6;font-size:18px;font-weight:bold">셀럽 A</div>
+              <div style="color:#22c55e;font-size:24px">+0.45</div>
+              <div style="color:#71717a;font-size:12px">댓글 1,234개</div>
+            </div>
+            <div style="flex:1;padding:12px;border:1px solid #3f3f46;border-radius:8px;text-align:center">
+              <div style="color:#f97316;font-size:18px;font-weight:bold">셀럽 B</div>
+              <div style="color:#ef4444;font-size:24px">-0.32</div>
+              <div style="color:#71717a;font-size:12px">댓글 856개</div>
+            </div>
+          </div>
+          <div style="height:160px;border:1px solid #27272a;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative">
+            <svg width="90%" height="120" viewBox="0 0 400 120">
+              <line x1="0" y1="60" x2="400" y2="60" stroke="#27272a" stroke-dasharray="4"/>
+              <polyline points="0,40 50,35 100,50 150,30 200,45 250,25 300,35 350,30 400,20" fill="none" stroke="#3b82f6" stroke-width="2"/>
+              <polyline points="0,70 50,75 100,65 150,80 200,90 250,85 300,95 350,88 400,85" fill="none" stroke="#f97316" stroke-width="2"/>
+            </svg>
+          </div>
+          <div style="text-align:center;margin-top:8px;color:#71717a;font-size:12px">— 셀럽 A &nbsp;&nbsp; — 셀럽 B</div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>장점</h4><ul><li>한눈에 추이 비교</li><li>직관적</li></ul></div>
+        <div class="cons"><h4>단점</h4><ul><li>주제별 비교 불가</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>오버레이 차트 + 레이더 차트 (주제별)</h3>
+      <p>A에 더해, 주제별 감성을 레이더 차트로 비교 (연기력, 인성, 외모 등). Phase 2B의 topics 데이터 활용.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">비교 대시보드 + 레이더</div>
+        <div class="mockup-body" style="padding:16px;display:flex;gap:16px">
+          <div style="flex:1;height:140px;border:1px solid #27272a;border-radius:8px;display:flex;align-items:center;justify-content:center">
+            <svg width="90%" height="100" viewBox="0 0 300 100">
+              <line x1="0" y1="50" x2="300" y2="50" stroke="#27272a" stroke-dasharray="4"/>
+              <polyline points="0,30 50,25 100,40 150,20 200,35 250,15 300,20" fill="none" stroke="#3b82f6" stroke-width="2"/>
+              <polyline points="0,60 50,65 100,55 150,70 200,80 250,75 300,85" fill="none" stroke="#f97316" stroke-width="2"/>
+            </svg>
+          </div>
+          <div style="flex:1;height:140px;border:1px solid #27272a;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-direction:column">
+            <div style="color:#a1a1aa;font-size:11px;margin-bottom:4px">주제별 비교</div>
+            <svg width="120" height="110" viewBox="0 0 120 110">
+              <polygon points="60,10 100,35 90,80 30,80 20,35" fill="none" stroke="#27272a"/>
+              <polygon points="60,25 85,40 80,70 40,70 35,40" fill="rgba(59,130,246,0.15)" stroke="#3b82f6" stroke-width="1.5"/>
+              <polygon points="60,35 75,45 72,65 48,65 45,45" fill="rgba(249,115,22,0.15)" stroke="#f97316" stroke-width="1.5"/>
+              <text x="60" y="7" text-anchor="middle" fill="#71717a" font-size="8">연기력</text>
+              <text x="107" y="37" text-anchor="start" fill="#71717a" font-size="8">외모</text>
+              <text x="95" y="87" text-anchor="start" fill="#71717a" font-size="8">인성</text>
+              <text x="10" y="87" text-anchor="end" fill="#71717a" font-size="8">발언</text>
+              <text x="13" y="37" text-anchor="end" fill="#71717a" font-size="8">작품</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>장점</h4><ul><li>추이 + 주제별 비교 모두 가능</li><li>Phase 2B 데이터 최대 활용</li></ul></div>
+        <div class="cons"><h4>단점</h4><ul><li>레이더 차트 구현 추가 필요</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>오버레이 + 레이더 + 소스별 비교 테이블</h3>
+      <p>B에 더해, 소스별(네이버/유튜브/X 등) 감성 비교 테이블. 어떤 플랫폼에서 어떤 셀럽이 더 인기인지.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">소스별 비교</div>
+        <div class="mockup-body" style="padding:12px">
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <tr style="border-bottom:1px solid #27272a;color:#71717a">
+              <th style="text-align:left;padding:6px">소스</th>
+              <th style="text-align:center;padding:6px;color:#3b82f6">셀럽 A</th>
+              <th style="text-align:center;padding:6px;color:#f97316">셀럽 B</th>
+            </tr>
+            <tr style="border-bottom:1px solid #27272a">
+              <td style="padding:6px;color:#a1a1aa">네이버</td>
+              <td style="text-align:center;padding:6px;color:#22c55e">+0.52</td>
+              <td style="text-align:center;padding:6px;color:#ef4444">-0.21</td>
+            </tr>
+            <tr style="border-bottom:1px solid #27272a">
+              <td style="padding:6px;color:#a1a1aa">유튜브</td>
+              <td style="text-align:center;padding:6px;color:#22c55e">+0.38</td>
+              <td style="text-align:center;padding:6px;color:#ef4444">-0.45</td>
+            </tr>
+            <tr>
+              <td style="padding:6px;color:#a1a1aa">X</td>
+              <td style="text-align:center;padding:6px;color:#22c55e">+0.61</td>
+              <td style="text-align:center;padding:6px;color:#a1a1aa">+0.02</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>장점</h4><ul><li>가장 풍부한 비교</li><li>플랫폼별 여론 차이 파악</li></ul></div>
+        <div class="cons"><h4>단점</h4><ul><li>구현 범위 가장 큼</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

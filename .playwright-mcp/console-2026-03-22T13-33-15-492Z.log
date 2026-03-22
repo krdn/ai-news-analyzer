@@ -1,0 +1,268 @@
+[   19215ms] [ERROR] ./src/entities/celebrity/api/use-celebrities.ts:1:1
+Export default doesn't exist in target module
+> 1 | import useSWR from "swr";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { Celebrity } from "@prisma/client";
+  3 |
+  4 | const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
+The export default was not found in module [project]/node_modules/.pnpm/swr@2.4.1_react@19.2.4/node_modules/swr/dist/index/react-server.mjs [app-rsc] (ecmascript).
+Did you mean to import unstable_serialize?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Server Component:
+    ./src/entities/celebrity/api/use-celebrities.ts
+    ./src/entities/celebrity/index.ts
+    ./src/app/(dashboard)/page.tsx
+
+  Client Component Browser:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component Browser]
+    ./src/entities/celebrity/index.ts [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component SSR]
+    ./src/entities/celebrity/index.ts [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component] @ http://localhost:3200/_next/static/chunks/11y7_next_dist_0bi0ewc._.js:3272
+[   19219ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3200/?_rsc=13uu9:0
+[   19320ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3200/?_rsc=1gzla:0
+[   19339ms] [ERROR] ./src/entities/celebrity/api/use-celebrities.ts:1:1
+Export default doesn't exist in target module
+> 1 | import useSWR from "swr";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { Celebrity } from "@prisma/client";
+  3 |
+  4 | const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
+The export default was not found in module [project]/node_modules/.pnpm/swr@2.4.1_react@19.2.4/node_modules/swr/dist/index/react-server.mjs [app-rsc] (ecmascript).
+Did you mean to import unstable_serialize?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Server Component:
+    ./src/entities/celebrity/api/use-celebrities.ts
+    ./src/entities/celebrity/index.ts
+    ./src/app/(dashboard)/page.tsx
+
+  Client Component Browser:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component Browser]
+    ./src/entities/celebrity/index.ts [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component SSR]
+    ./src/entities/celebrity/index.ts [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component] @ http://localhost:3200/_next/static/chunks/11y7_next_dist_0bi0ewc._.js:3272
+[   19443ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3200/:0
+[   19799ms] Error: ./src/entities/celebrity/api/use-celebrities.ts:1:1
+Export default doesn't exist in target module
+> 1 | import useSWR from "swr";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { Celebrity } from "@prisma/client";
+  3 |
+  4 | const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
+The export default was not found in module [project]/node_modules/.pnpm/swr@2.4.1_react@19.2.4/node_modules/swr/dist/index/react-server.mjs [app-rsc] (ecmascript).
+Did you mean to import unstable_serialize?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Server Component:
+    ./src/entities/celebrity/api/use-celebrities.ts
+    ./src/entities/celebrity/index.ts
+    ./src/app/(dashboard)/page.tsx
+
+  Client Component Browser:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component Browser]
+    ./src/entities/celebrity/index.ts [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component SSR]
+    ./src/entities/celebrity/index.ts [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component]
+
+
+    at <unknown> (Error: ./src/entities/celebrity/api/use-celebrities.ts:1:1)
+    at Object.getCompilationErrors (file:///home/gon/projects/ai/ai-news-analyzer/node_modules/.pnpm/next@16.2.1_@babel+core@7.29.0_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1189:59)
+    at DevBundlerService.getCompilationError (file:///home/gon/projects/ai/ai-news-analyzer/node_modules/.pnpm/next@16.2.1_@babel+core@7.29.0_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/server/lib/dev-bundler-service.js:44:55)
+    at DevServer.getCompilationError (file:///home/gon/projects/ai/ai-news-analyzer/node_modules/.pnpm/next@16.2.1_@babel+core@7.29.0_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/server/dev/next-dev-server.js:719:42)
+    at DevServer.findPageComponents (file:///home/gon/projects/ai/ai-news-analyzer/node_modules/.pnpm/next@16.2.1_@babel+core@7.29.0_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/server/dev/next-dev-server.js:689:43)
+    at async DevServer.renderErrorToResponseImpl (file:///home/gon/projects/ai/ai-news-analyzer/node_modules/.pnpm/next@16.2.1_@babel+core@7.29.0_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/next/dist/server/base-server.js:1745:26)
+[   19949ms] [ERROR] ./src/entities/celebrity/api/use-celebrities.ts:1:1
+Export default doesn't exist in target module
+> 1 | import useSWR from "swr";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { Celebrity } from "@prisma/client";
+  3 |
+  4 | const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
+The export default was not found in module [project]/node_modules/.pnpm/swr@2.4.1_react@19.2.4/node_modules/swr/dist/index/react-server.mjs [app-rsc] (ecmascript).
+Did you mean to import unstable_serialize?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Server Component:
+    ./src/entities/celebrity/api/use-celebrities.ts
+    ./src/entities/celebrity/index.ts
+    ./src/app/(dashboard)/page.tsx
+
+  Client Component Browser:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component Browser]
+    ./src/entities/celebrity/index.ts [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component SSR]
+    ./src/entities/celebrity/index.ts [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component] @ http://localhost:3200/_next/static/chunks/11y7_next_dist_08kviqv._.js:1945
+[   19967ms] [ERROR] ./src/entities/celebrity/api/use-celebrities.ts:1:1
+Export default doesn't exist in target module
+> 1 | import useSWR from "swr";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { Celebrity } from "@prisma/client";
+  3 |
+  4 | const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
+The export default was not found in module [project]/node_modules/.pnpm/swr@2.4.1_react@19.2.4/node_modules/swr/dist/index/react-server.mjs [app-rsc] (ecmascript).
+Did you mean to import unstable_serialize?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Server Component:
+    ./src/entities/celebrity/api/use-celebrities.ts
+    ./src/entities/celebrity/index.ts
+    ./src/app/(dashboard)/page.tsx
+
+  Client Component Browser:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component Browser]
+    ./src/entities/celebrity/index.ts [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component SSR]
+    ./src/entities/celebrity/index.ts [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component] @ http://localhost:3200/_next/static/chunks/11y7_next_dist_08kviqv._.js:1945
+[   20066ms] [ERROR] ./src/entities/celebrity/api/use-celebrities.ts:1:1
+Export default doesn't exist in target module
+> 1 | import useSWR from "swr";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { Celebrity } from "@prisma/client";
+  3 |
+  4 | const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
+The export default was not found in module [project]/node_modules/.pnpm/swr@2.4.1_react@19.2.4/node_modules/swr/dist/index/react-server.mjs [app-rsc] (ecmascript).
+Did you mean to import unstable_serialize?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Server Component:
+    ./src/entities/celebrity/api/use-celebrities.ts
+    ./src/entities/celebrity/index.ts
+    ./src/app/(dashboard)/page.tsx
+
+  Client Component Browser:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component Browser]
+    ./src/entities/celebrity/index.ts [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component Browser]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/entities/celebrity/api/use-celebrities.ts [Client Component SSR]
+    ./src/entities/celebrity/index.ts [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Client Component SSR]
+    ./src/entities/celebrity/ui/celebrity-form.tsx [Server Component]
+    ./src/entities/celebrity/index.ts [Server Component]
+    ./src/app/(dashboard)/page.tsx [Server Component] @ http://localhost:3200/_next/static/chunks/11y7_next_dist_08kviqv._.js:1945
+[   59592ms] TypeError: events.map is not a function
+    at CelebrityDetailPage.useMemo[eventMarkers] (http://localhost:3200/_next/static/chunks/src_04h45_l._.js:2062:27)
+    at updateMemo (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:5413:21)
+    at Object.useMemo (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:15465:24)
+    at exports.useMemo (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_03xgjy_._.js:1742:36)
+    at CelebrityDetailPage (http://localhost:3200/_next/static/chunks/src_04h45_l._.js:2059:360)
+    at Object.react_stack_bottom_frame (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:15037:24)
+    at renderWithHooks (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6081:21)
+    at beginWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6691:24)
+    at runWithFiberInDEV (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:965:74)
+    at performUnitOfWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9555:97)
+    at workLoopSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9449:40)
+    at renderRootSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9098:47)
+    at performSyncWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10179:316)
+    at processRootScheduleInMicrotask (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10200:106)
+    at http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10274:158
+[   79039ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ http://localhost:3200/_next/static/chunks/11y7_next_dist_0bi0ewc._.js:2431
+[   80424ms] TypeError: events.map is not a function
+    at CelebrityDetailPage.useMemo[eventMarkers] (http://localhost:3200/_next/static/chunks/src_04h45_l._.js:2063:27)
+    at updateMemo (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:5413:21)
+    at Object.useMemo (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:15465:24)
+    at exports.useMemo (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_03xgjy_._.js:1742:36)
+    at CelebrityDetailPage (http://localhost:3200/_next/static/chunks/src_04h45_l._.js:2060:360)
+    at Object.react_stack_bottom_frame (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:15037:24)
+    at renderWithHooks (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6081:21)
+    at beginWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6691:24)
+    at runWithFiberInDEV (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:965:74)
+    at performUnitOfWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9555:97)
+    at workLoopSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9449:40)
+    at renderRootSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9098:47)
+    at performSyncWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10179:316)
+    at processRootScheduleInMicrotask (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10200:106)
+    at http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10274:158
+[   97443ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ http://localhost:3200/_next/static/chunks/11y7_next_dist_0bi0ewc._.js:2431
+[   98354ms] TypeError: events.map is not a function
+    at CelebrityDetailPage.useMemo[eventMarkers] (http://localhost:3200/_next/static/chunks/src_04h45_l._.js:2064:27)
+    at updateMemo (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:5413:21)
+    at Object.useMemo (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:15465:24)
+    at exports.useMemo (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_03xgjy_._.js:1742:36)
+    at CelebrityDetailPage (http://localhost:3200/_next/static/chunks/src_04h45_l._.js:2061:360)
+    at Object.react_stack_bottom_frame (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:15037:24)
+    at renderWithHooks (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6081:21)
+    at beginWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6691:24)
+    at runWithFiberInDEV (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:965:74)
+    at performUnitOfWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9555:97)
+    at workLoopSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9449:40)
+    at renderRootSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9098:47)
+    at performSyncWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10179:316)
+    at processRootScheduleInMicrotask (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10200:106)
+    at http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10274:158
