@@ -159,8 +159,41 @@ export async function fetchNaverComments(
       return [];
     }
 
-    // 댓글 데이터 추출
+    // "더보기" 버튼 반복 클릭 (최대 5회, 더 많은 댓글 로드)
+    for (let i = 0; i < 5; i++) {
+      try {
+        const moreBtn = await page.$(".u_cbox_btn_more");
+        if (!moreBtn) break;
+        const isVisible = await moreBtn.isVisible();
+        if (!isVisible) break;
+        await moreBtn.click();
+        await page.waitForTimeout(1000);
+      } catch {
+        break;
+      }
+    }
+
+    // 답글 "답글 보기" 버튼 모두 클릭 (답글 펼치기)
+    try {
+      const replyButtons = await page.$$(".u_cbox_btn_reply");
+      for (const btn of replyButtons) {
+        try {
+          const isVisible = await btn.isVisible();
+          if (isVisible) {
+            await btn.click();
+            await page.waitForTimeout(500);
+          }
+        } catch {
+          // 개별 답글 버튼 클릭 실패 무시
+        }
+      }
+    } catch {
+      // 답글 버튼이 없는 경우 무시
+    }
+
+    // 댓글 + 답글 데이터 추출
     const rawComments = await page.evaluate(() => {
+      // 최상위 댓글 + 답글 모두 수집
       const commentElements = document.querySelectorAll(
         ".u_cbox_comment_box .u_cbox_area"
       );
