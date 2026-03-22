@@ -46,6 +46,7 @@ docker compose up -d postgres redis  # DB/Redis 시작
 - `X_BEARER_TOKEN` — X(트위터) API v2
 - `META_APP_ID` / `META_APP_SECRET` / `META_PAGE_TOKEN` — Meta Graph API
 - `OLLAMA_URL` / `OLLAMA_MODEL` — Ollama LLM (심층 분석)
+- `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` — Telegram 알림 봇
 
 ## 감성 분석 파이프라인
 ```
@@ -70,5 +71,5 @@ docker compose up -d postgres redis  # DB/Redis 시작
 - Phase 2A: 크롤러 소스 확장 ✅
 - Phase 2B: Ollama LLM 심층 분석 ✅
 - Phase 3A: 이벤트 감지 + 타임라인 + 비교 ✅
-- Phase 3B: 알림 + 즐겨찾기
+- Phase 3B: 알림 + 즐겨찾기 ✅
 - Phase 4: 고도화

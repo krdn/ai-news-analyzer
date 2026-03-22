@@ -4,13 +4,21 @@ import type { Celebrity } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import { CATEGORY_LABELS } from "@/entities/celebrity";
 import { cn } from "@/lib/utils";
+import { FavoriteToggle } from "./favorite-toggle";
 
 interface CelebrityCardProps {
   celebrity: Celebrity;
   onClick?: (celebrity: Celebrity) => void;
+  isFavorite?: boolean;
+  showFavoriteToggle?: boolean;
 }
 
-export function CelebrityCard({ celebrity, onClick }: CelebrityCardProps) {
+export function CelebrityCard({
+  celebrity,
+  onClick,
+  isFavorite = false,
+  showFavoriteToggle = false,
+}: CelebrityCardProps) {
   return (
     <div
       role={onClick ? "button" : undefined}
@@ -23,10 +31,17 @@ export function CelebrityCard({ celebrity, onClick }: CelebrityCardProps) {
         }
       }}
       className={cn(
-        "rounded-lg border border-zinc-800 bg-zinc-900 p-4 text-zinc-100 transition-colors",
+        "relative rounded-lg border border-zinc-800 bg-zinc-900 p-4 text-zinc-100 transition-colors",
         onClick && "cursor-pointer hover:border-zinc-600 hover:bg-zinc-800/80"
       )}
     >
+      {showFavoriteToggle && (
+        <FavoriteToggle
+          celebrityId={celebrity.id}
+          initialFavorite={isFavorite}
+        />
+      )}
+
       <div className="flex items-start justify-between gap-2">
         <h3 className="text-base font-semibold">{celebrity.name}</h3>
         <Badge variant="secondary">
