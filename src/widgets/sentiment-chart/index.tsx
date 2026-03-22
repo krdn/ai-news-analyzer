@@ -8,6 +8,7 @@ import {
   CartesianGrid,
   Tooltip,
   ReferenceLine,
+  ReferenceDot,
   ResponsiveContainer,
 } from "recharts";
 import {
@@ -18,9 +19,17 @@ import {
 } from "@/components/ui/card";
 import type { SentimentDataPoint } from "@/features/sentiment-tracking";
 
+interface EventMarker {
+  periodStart: string;
+  title: string;
+  sentimentAfter: number;
+  sentimentBefore: number;
+}
+
 interface SentimentChartProps {
   data: SentimentDataPoint[];
   title?: string;
+  events?: EventMarker[];
 }
 
 function formatDate(dateStr: string) {
@@ -61,9 +70,31 @@ function CustomTooltip({
   );
 }
 
+/**
+ * 이벤트 날짜와 가장 가까운 스냅샷을 찾아 해당 avgScore를 반환
+ */
+function findClosestScore(
+  eventDate: string,
+  data: SentimentDataPoint[]
+): number | null {
+  if (!data.length) return null;
+  const target = new Date(eventDate).getTime();
+  let closest = data[0];
+  let minDiff = Math.abs(new Date(data[0].periodStart).getTime() - target);
+  for (const point of data) {
+    const diff = Math.abs(new Date(point.periodStart).getTime() - target);
+    if (diff < minDiff) {
+      minDiff = diff;
+      closest = point;
+    }
+  }
+  return closest.avgScore;
+}
+
 export function SentimentChart({
   data,
   title = "감성 추이",
+  events,
 }: SentimentChartProps) {
   if (!data.length) {
     return (
@@ -111,6 +142,37 @@ export function SentimentChart({
               dot={{ fill: "#3b82f6", r: 3 }}
               activeDot={{ r: 5 }}
             />
+            {events?.map((event) => {
+              const yVal = findClosestScore(event.periodStart, data);
+              if (yVal === null) return null;
+              const dropped = event.sentimentAfter < event.sentimentBefore;
+              const target = new Date(event.periodStart).getTime();
+              const closest = data.reduce((prev, curr) =>
+                Math.abs(new Date(curr.periodStart).getTime() - target) <
+                Math.abs(new Date(prev.periodStart).getTime() - target)
+                  ? curr
+                  : prev
+              );
+              return (
+                <ReferenceDot
+                  key={event.title + event.periodStart}
+                  x={closest.periodStart}
+                  y={yVal}
+                  r={6}
+                  fill={dropped ? "#ef4444" : "#22c55e"}
+                  stroke="#18181b"
+                  strokeWidth={2}
+                  label={{
+                    value: event.title.length > 8
+                      ? event.title.slice(0, 8) + "..."
+                      : event.title,
+                    position: "top",
+                    fill: dropped ? "#fca5a5" : "#86efac",
+                    fontSize: 10,
+                  }}
+                />
+              );
+            })}
           </LineChart>
         </ResponsiveContainer>
       </CardContent>
