@@ -1,20 +1,84 @@
 import { Worker } from "bullmq";
 import { redis } from "../shared/lib/redis";
-import { QUEUE_NAMES, snapshotQueue } from "../shared/lib/queue";
+import { QUEUE_NAMES, crawlQueue, snapshotQueue } from "../shared/lib/queue";
 import { prisma } from "../shared/lib/prisma";
-import { crawlNaverForCelebrity } from "./crawler/naver";
+import { crawlerRegistry, processCrawlResult } from "./crawler/registry";
+import { NaverCrawlerPlugin } from "./crawler/naver";
+import { YouTubeCrawlerPlugin } from "./crawler/youtube";
+import { TwitterCrawlerPlugin } from "./crawler/twitter";
+import { MetaCrawlerPlugin } from "./crawler/meta";
+import { DcinsideCrawlerPlugin } from "./crawler/dcinside";
 import { analyzeSentiment } from "./analyzer/sentiment";
 import { aggregateComments } from "./snapshot/aggregator";
+import type { SourceType } from "@prisma/client";
+
+// --- 크롤러 플러그인 등록 ---
+const dcinsidePlugin = new DcinsideCrawlerPlugin();
+
+crawlerRegistry.register(new NaverCrawlerPlugin());
+crawlerRegistry.register(new YouTubeCrawlerPlugin());
+crawlerRegistry.register(new TwitterCrawlerPlugin());
+crawlerRegistry.register(new MetaCrawlerPlugin());
+crawlerRegistry.register(dcinsidePlugin);
+
+console.log(
+  `[Registry] 등록된 크롤러: ${crawlerRegistry.getRegisteredTypes().join(", ")}`
+);
+
+// --- 소스별 크롤링 주기 (ms) ---
+const CRAWL_INTERVALS: Record<string, number> = {
+  NAVER: 30 * 60 * 1000, // 30분
+  YOUTUBE: 60 * 60 * 1000, // 1시간
+  X: 2 * 60 * 60 * 1000, // 2시간
+  META: 2 * 60 * 60 * 1000, // 2시간
+  COMMUNITY: 60 * 60 * 1000, // 1시간
+};
 
 // --- Crawl Worker ---
-// 셀러브리티 뉴스 크롤링 워커
+// 셀러브리티 뉴스 크롤링 워커 (플러그인 레지스트리 기반)
 const crawlWorker = new Worker(
   QUEUE_NAMES.CRAWL,
   async (job) => {
-    const { celebrityId } = job.data as { celebrityId: string };
-    console.log(`[Crawl] 크롤링 시작: ${celebrityId}`);
-    await crawlNaverForCelebrity(celebrityId);
-    console.log(`[Crawl] 크롤링 완료: ${celebrityId}`);
+    const { celebrityId, sourceType } = job.data as {
+      celebrityId: string;
+      sourceType: SourceType;
+    };
+
+    const plugin = crawlerRegistry.get(sourceType);
+    if (!plugin) {
+      console.warn(
+        `[Crawl] 등록되지 않은 소스 타입: ${sourceType}, 건너뜀`
+      );
+      return;
+    }
+
+    // DB에서 검색 키워드 조회
+    const source = await prisma.celebritySource.findFirst({
+      where: { celebrityId, sourceType, enabled: true },
+      select: { searchKeywords: true },
+    });
+
+    if (!source) {
+      console.warn(
+        `[Crawl] 활성 소스 없음: ${celebrityId}/${sourceType}, 건너뜀`
+      );
+      return;
+    }
+
+    console.log(
+      `[Crawl] 크롤링 시작: ${celebrityId} (${sourceType}), 키워드: ${source.searchKeywords.join(", ")}`
+    );
+
+    const result = await plugin.crawl(celebrityId, source.searchKeywords);
+    const { articlesCreated, commentsCreated } = await processCrawlResult(
+      result,
+      celebrityId,
+      sourceType
+    );
+
+    console.log(
+      `[Crawl] 크롤링 완료: ${celebrityId} (${sourceType}) - 기사 ${articlesCreated}개, 댓글 ${commentsCreated}개`
+    );
   },
   {
     connection: redis,
@@ -158,6 +222,60 @@ const snapshotWorker = new Worker(
   }
 );
 
+// --- 스케줄러: DB 기반 자동 크롤링 ---
+async function setupSchedules(): Promise<void> {
+  console.log("[Scheduler] 기존 반복 작업 정리 중...");
+
+  // 기존 반복 작업(repeatable jobs) 모두 제거
+  const repeatableJobs = await crawlQueue.getRepeatableJobs();
+  for (const job of repeatableJobs) {
+    await crawlQueue.removeRepeatableByKey(job.key);
+  }
+  console.log(
+    `[Scheduler] 기존 반복 작업 ${repeatableJobs.length}개 제거 완료`
+  );
+
+  // DB에서 활성화된 소스 조회
+  const sources = await prisma.celebritySource.findMany({
+    where: { enabled: true },
+    select: {
+      celebrityId: true,
+      sourceType: true,
+    },
+  });
+
+  // 각 소스에 대해 반복 작업 등록
+  let scheduled = 0;
+  for (const source of sources) {
+    const interval = CRAWL_INTERVALS[source.sourceType];
+    if (!interval) {
+      console.warn(
+        `[Scheduler] 크롤링 주기 미정의: ${source.sourceType}, 건너뜀`
+      );
+      continue;
+    }
+
+    await crawlQueue.add(
+      `crawl-${source.sourceType.toLowerCase()}`,
+      {
+        celebrityId: source.celebrityId,
+        sourceType: source.sourceType,
+      },
+      {
+        repeat: {
+          every: interval,
+        },
+        jobId: `schedule-${source.celebrityId}-${source.sourceType}`,
+      }
+    );
+    scheduled++;
+  }
+
+  console.log(
+    `[Scheduler] ${scheduled}개 반복 크롤링 작업 등록 완료 (총 소스: ${sources.length}개)`
+  );
+}
+
 // --- 에러 핸들러 ---
 crawlWorker.on("failed", (job, err) => {
   console.error(`[Crawl] 작업 실패: ${job?.id}`, err.message);
@@ -179,12 +297,22 @@ async function shutdown() {
     analysisWorker.close(),
     snapshotWorker.close(),
   ]);
+
+  // Playwright 브라우저 정리
+  await dcinsidePlugin.closeBrowser();
+  console.log("[Worker] Playwright 브라우저 정리 완료");
+
   console.log("[Worker] 모든 워커 종료 완료");
   process.exit(0);
 }
 
 process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
+
+// --- 스케줄러 초기화 ---
+setupSchedules().catch((err) => {
+  console.error("[Scheduler] 스케줄 설정 실패:", err);
+});
 
 console.log("[Worker] 모든 워커 시작 완료");
 console.log(`  - Crawl Worker (concurrency: 2, rate limit: 1/2s)`);
