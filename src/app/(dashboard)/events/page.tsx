@@ -25,7 +25,7 @@ export default function EventsPage() {
 
   const { data: celebrities } = useCelebrities();
   const {
-    data: events,
+    data: eventsResponse,
     isLoading,
     error,
   } = useEvents(selectedCelebrity || undefined, days);
@@ -80,7 +80,7 @@ export default function EventsPage() {
       )}
 
       {/* 타임라인 */}
-      <EventTimeline events={events ?? []} isLoading={isLoading} />
+      <EventTimeline events={eventsResponse?.data ?? eventsResponse?.events ?? []} isLoading={isLoading} />
     </div>
   );
 }

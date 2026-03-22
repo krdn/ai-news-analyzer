@@ -1,0 +1,35 @@
+[     306ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3200/events:0
+[    2090ms] TypeError: celebrities?.map is not a function
+    at EventsPage (http://localhost:3200/_next/static/chunks/src_0byltht._.js:956:50)
+    at Object.react_stack_bottom_frame (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:15037:24)
+    at renderWithHooks (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6081:21)
+    at beginWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6691:24)
+    at runWithFiberInDEV (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:965:74)
+    at performUnitOfWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9555:97)
+    at workLoopSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9449:40)
+    at renderRootSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9098:47)
+    at performSyncWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10179:316)
+    at processRootScheduleInMicrotask (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10200:106)
+    at http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10274:158
+[   44143ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ http://localhost:3200/_next/static/chunks/11y7_next_dist_0bi0ewc._.js:2431
+[   44307ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3200/events:0
+[   46365ms] TypeError: celebrities?.map is not a function
+    at EventsPage (http://localhost:3200/_next/static/chunks/src_0byltht._.js:956:50)
+    at Object.react_stack_bottom_frame (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:15037:24)
+    at renderWithHooks (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6081:21)
+    at beginWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6691:24)
+    at runWithFiberInDEV (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:965:74)
+    at performUnitOfWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9555:97)
+    at workLoopSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9449:40)
+    at renderRootSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9098:47)
+    at performSyncWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10179:316)
+    at processRootScheduleInMicrotask (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10200:106)
+    at http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10274:158
+[   71625ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ http://localhost:3200/_next/static/chunks/11y7_next_dist_0bi0ewc._.js:2431
+[   71947ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3200/events:0

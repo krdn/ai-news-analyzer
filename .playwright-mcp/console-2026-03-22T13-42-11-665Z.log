@@ -1,0 +1,16 @@
+[    1479ms] ReferenceError: events is not defined
+    at CelebrityDetailPage (http://localhost:3200/_next/static/chunks/src_04h45_l._.js:2247:44)
+    at Object.react_stack_bottom_frame (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:15037:24)
+    at renderWithHooks (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6081:21)
+    at beginWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:6691:24)
+    at runWithFiberInDEV (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:965:74)
+    at performUnitOfWork (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9555:97)
+    at workLoopSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9449:40)
+    at renderRootSync (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:9098:47)
+    at performSyncWorkOnRoot (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10179:316)
+    at processRootScheduleInMicrotask (http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10200:106)
+    at http://localhost:3200/_next/static/chunks/11y7_next_dist_compiled_react-dom_02ci42l._.js:10274:158
+[   50411ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ http://localhost:3200/_next/static/chunks/11y7_next_dist_0bi0ewc._.js:2431
