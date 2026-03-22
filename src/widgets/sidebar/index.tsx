@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, GitCompareArrows, Settings, Users } from "lucide-react";
+import { BarChart3, Clock, GitCompareArrows, Settings, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/", label: "대시보드", icon: BarChart3 },
+  { href: "/events", label: "이벤트 타임라인", icon: Clock },
   { href: "/compare", label: "셀럽 비교", icon: GitCompareArrows },
   { href: "/admin", label: "셀럽 관리", icon: Users },
   { href: "/admin/crawler", label: "크롤러 상태", icon: Settings },

@@ -69,5 +69,6 @@ docker compose up -d postgres redis  # DB/Redis 시작
 - Phase 1: 기반 + 네이버 뉴스 MVP ✅
 - Phase 2A: 크롤러 소스 확장 ✅
 - Phase 2B: Ollama LLM 심층 분석 ✅
-- Phase 3: 추적 & 비교 기능
+- Phase 3A: 이벤트 감지 + 타임라인 + 비교 ✅
+- Phase 3B: 알림 + 즐겨찾기
 - Phase 4: 고도화
