@@ -20,8 +20,13 @@ export async function GET(request: NextRequest) {
     where.category = category;
   }
 
+  const limit = Math.min(parseInt(searchParams.get("limit") ?? "50"), 100);
+  const cursor = searchParams.get("cursor");
+
   const celebrities = await prisma.celebrity.findMany({
     where,
+    take: limit + 1,
+    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -35,7 +40,11 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  return NextResponse.json(celebrities);
+  const hasNext = celebrities.length > limit;
+  const data = hasNext ? celebrities.slice(0, -1) : celebrities;
+  const nextCursor = hasNext ? data[data.length - 1].id : null;
+
+  return NextResponse.json({ data, nextCursor });
 }
 
 export async function POST(request: NextRequest) {
