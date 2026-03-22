@@ -47,6 +47,17 @@ docker compose up -d postgres redis  # DB/Redis 시작
 - `META_APP_ID` / `META_APP_SECRET` / `META_PAGE_TOKEN` — Meta Graph API
 - `OLLAMA_URL` / `OLLAMA_MODEL` — Ollama LLM (심층 분석)
 - `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` — Telegram 알림 봇
+- `NEXTAUTH_SECRET` — Auth.js 세션 암호화 키
+- `NEXTAUTH_URL` — 앱 기본 URL (인증 콜백)
+- `ADMIN_EMAIL` / `ADMIN_PASSWORD` — 초기 관리자 계정 시드
+
+## 인증 및 권한
+- Auth.js v5 (next-auth 5 beta) + Credentials 프로바이더
+- JWT 세션 전략, bcrypt 비밀번호 해싱
+- 역할: `ADMIN` (관리 기능), `USER` (읽기 전용)
+- 로그인 페이지: `/login`
+- 미인증 시 미들웨어가 `/login`으로 리다이렉트
+- PDF 리포트: `/api/reports/pdf` (셀럽별 감성 분석 보고서 생성)
 
 ## 감성 분석 파이프라인
 ```
@@ -72,4 +83,4 @@ docker compose up -d postgres redis  # DB/Redis 시작
 - Phase 2B: Ollama LLM 심층 분석 ✅
 - Phase 3A: 이벤트 감지 + 타임라인 + 비교 ✅
 - Phase 3B: 알림 + 즐겨찾기 ✅
-- Phase 4: 고도화
+- Phase 4: 고도화 (인증, 캐시, PDF 리포트, 관리자) ✅
