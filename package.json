@@ -1,0 +1,54 @@
+{
+  "name": "ai-news-analyzer",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "tsx-bundle-worker": "esbuild src/workers/index.ts --bundle --platform=node --outfile=dist/worker.js --alias:@=./src --external:@prisma/client --external:bullmq --external:ioredis --external:axios --external:cheerio"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.5.0",
+    "axios": "^1.13.6",
+    "bullmq": "^5.71.0",
+    "cheerio": "^1.2.0",
+    "geist": "^1.7.0",
+    "ioredis": "^5.10.1",
+    "next": "16.2.1",
+    "prisma": "^7.5.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "recharts": "^3.8.0",
+    "swr": "^2.4.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/cheerio": "^1.0.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.0.1",
+    "esbuild": "^0.27.4",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.1",
+    "jsdom": "^29.0.1",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^4.1.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@prisma/engines",
+      "prisma",
+      "msgpackr-extract"
+    ]
+  }
+}
