@@ -45,6 +45,15 @@ docker compose up -d postgres redis  # DB/Redis 시작
 - `YOUTUBE_API_KEY` — YouTube Data API v3
 - `X_BEARER_TOKEN` — X(트위터) API v2
 - `META_APP_ID` / `META_APP_SECRET` / `META_PAGE_TOKEN` — Meta Graph API
+- `OLLAMA_URL` / `OLLAMA_MODEL` — Ollama LLM (심층 분석)
+
+## 감성 분석 파이프라인
+```
+1단계 (규칙 기반, 전체 댓글) → sentiment.ts
+  ↓ 대상 필터링 (confidence < 0.7 | 길이 > 50 | 좋아요 상위)
+2단계 (Ollama LLM, 선별 댓글) → llm-analyzer.ts + deep-analysis.ts
+  → emotions[], topics[] 채움
+```
 
 ## 크롤러 플러그인 아키텍처
 `src/workers/crawler/` — CrawlerPlugin 인터페이스 기반
@@ -58,7 +67,7 @@ docker compose up -d postgres redis  # DB/Redis 시작
 
 ## 개발 단계
 - Phase 1: 기반 + 네이버 뉴스 MVP ✅
-- Phase 2A (현재): 크롤러 소스 확장 ✅
-- Phase 2B: Ollama LLM 심층 분석
+- Phase 2A: 크롤러 소스 확장 ✅
+- Phase 2B: Ollama LLM 심층 분석 ✅
 - Phase 3: 추적 & 비교 기능
 - Phase 4: 고도화
