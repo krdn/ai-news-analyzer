@@ -59,5 +59,17 @@ export async function POST(request: NextRequest) {
   }
 
   const celebrity = await prisma.celebrity.create({ data: parsed.data });
+
+  // 기본 소스(NAVER) 자동 등록 — 셀럽 이름을 검색 키워드로 사용
+  const defaultKeywords = [celebrity.name, ...(celebrity.aliases ?? [])];
+  await prisma.celebritySource.create({
+    data: {
+      celebrityId: celebrity.id,
+      sourceType: "NAVER",
+      enabled: true,
+      searchKeywords: defaultKeywords,
+    },
+  });
+
   return NextResponse.json(celebrity, { status: 201 });
 }
