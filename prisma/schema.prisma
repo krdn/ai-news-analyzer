@@ -173,6 +173,17 @@ model Alert {
   @@map("alerts")
 }
 
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("USER")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
 model AppSetting {
   key   String @id
   value Json

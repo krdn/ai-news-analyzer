@@ -9,13 +9,19 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "tsx-bundle-worker": "esbuild src/workers/index.ts --bundle --platform=node --outfile=dist/worker.js --alias:@=./src --external:@prisma/client --external:bullmq --external:ioredis --external:axios --external:cheerio"
+    "tsx-bundle-worker": "esbuild src/workers/index.ts --bundle --platform=node --outfile=dist/worker.js --alias:@=./src --external:@prisma/client --external:bullmq --external:ioredis --external:axios --external:cheerio",
+    "db:seed": "npx tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
+    "@react-pdf/renderer": "^4.3.2",
     "axios": "^1.13.6",
+    "bcryptjs": "^3.0.3",
     "bullmq": "^5.71.0",
     "cheerio": "^1.2.0",
     "class-variance-authority": "^0.7.1",
@@ -25,6 +31,7 @@
     "ioredis": "^5.10.1",
     "lucide-react": "^0.577.0",
     "next": "16.2.1",
+    "next-auth": "5.0.0-beta.30",
     "pg": "^8.20.0",
     "playwright": "^1.58.2",
     "prisma": "^7.5.0",
@@ -41,6 +48,7 @@
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@types/bcryptjs": "^3.0.0",
     "@types/cheerio": "^1.0.0",
     "@types/node": "^20",
     "@types/pg": "^8.20.0",
