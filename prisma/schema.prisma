@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --- Enums ---
+
+enum CelebrityCategory {
+  POLITICIAN
+  ENTERTAINER
+  OTHER
+}
+
+enum SourceType {
+  ALL
+  NAVER
+  YOUTUBE
+  X
+  META
+  COMMUNITY
+}
+
+enum SentimentLabel {
+  VERY_POSITIVE
+  POSITIVE
+  NEUTRAL
+  NEGATIVE
+  VERY_NEGATIVE
+}
+
+enum AnalysisDepth {
+  BASIC
+  DEEP
+}
+
+enum PeriodType {
+  HOURLY
+  DAILY
+  WEEKLY
+}
+
+// --- Models ---
+
+model Celebrity {
+  id           String            @id @default(uuid()) @db.Uuid
+  name         String            @db.VarChar(100)
+  aliases      String[]
+  category     CelebrityCategory
+  profileImage String?           @map("profile_image")
+  description  String?
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+
+  sources   CelebritySource[]
+  articles  Article[]
+  snapshots SentimentSnapshot[]
+
+  @@map("celebrities")
+}
+
+model CelebritySource {
+  id             String     @id @default(uuid()) @db.Uuid
+  celebrityId    String     @map("celebrity_id") @db.Uuid
+  sourceType     SourceType @map("source_type")
+  searchKeywords String[]   @map("search_keywords")
+  enabled        Boolean    @default(true)
+
+  celebrity Celebrity @relation(fields: [celebrityId], references: [id], onDelete: Cascade)
+
+  @@map("celebrity_sources")
+}
+
+model Article {
+  id              String         @id @default(uuid()) @db.Uuid
+  celebrityId     String         @map("celebrity_id") @db.Uuid
+  sourceType      SourceType     @map("source_type")
+  sourceUrl       String         @unique @map("source_url")
+  title           String
+  content         String?
+  author          String?
+  publishedAt     DateTime?      @map("published_at")
+  collectedAt     DateTime       @default(now()) @map("collected_at")
+  sentimentScore  Float?         @map("sentiment_score")
+  sentimentLabel  SentimentLabel? @map("sentiment_label")
+
+  celebrity Celebrity @relation(fields: [celebrityId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+
+  @@index([celebrityId, publishedAt])
+  @@map("articles")
+}
+
+model Comment {
+  id                  String         @id @default(uuid()) @db.Uuid
+  articleId           String         @map("article_id") @db.Uuid
+  content             String
+  author              String?
+  likes               Int            @default(0)
+  publishedAt         DateTime?      @map("published_at")
+  sentimentScore      Float?         @map("sentiment_score")
+  sentimentConfidence Float?         @map("sentiment_confidence")
+  sentimentLabel      SentimentLabel? @map("sentiment_label")
+  emotions            String[]
+  topics              String[]
+  analysisDepth       AnalysisDepth? @map("analysis_depth")
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
+  @@index([sentimentScore])
+  @@index([publishedAt])
+  @@map("comments")
+}
+
+model SentimentSnapshot {
+  id            String     @id @default(uuid()) @db.Uuid
+  celebrityId   String     @map("celebrity_id") @db.Uuid
+  periodType    PeriodType @map("period_type")
+  periodStart   DateTime   @map("period_start")
+  sourceType    SourceType @default(ALL) @map("source_type")
+  totalComments Int        @map("total_comments")
+  avgScore      Float      @map("avg_score")
+  positiveCount Int        @map("positive_count")
+  neutralCount  Int        @map("neutral_count")
+  negativeCount Int        @map("negative_count")
+  topEmotions   Json?      @map("top_emotions")
+  topTopics     Json?      @map("top_topics")
+
+  celebrity Celebrity @relation(fields: [celebrityId], references: [id], onDelete: Cascade)
+
+  @@unique([celebrityId, periodType, periodStart, sourceType], name: "snapshot_unique")
+  @@map("sentiment_snapshots")
+}
