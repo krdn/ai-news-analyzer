@@ -123,7 +123,7 @@ export async function detectSentimentAnomaly(
   const impactScore = Math.min(1.0, Math.abs(zScore) / 4);
   const title = generateEventTitle(celebrityName, scoreDiff);
 
-  await prisma.event.create({
+  const event = await prisma.event.create({
     data: {
       celebrityId,
       title,
@@ -140,4 +140,13 @@ export async function detectSentimentAnomaly(
   console.log(
     `[EventDetector] 이벤트 생성: ${title} (Z-score: ${zScore.toFixed(2)}, impact: ${impactScore.toFixed(2)})`
   );
+
+  // 알림 큐에 이벤트 알림 작업 추가
+  const { alertQueue } = await import("../shared/lib/queue");
+  await alertQueue.add("process-alert", {
+    eventId: event.id,
+    celebrityId,
+    celebrityName,
+  });
+  console.log(`[EventDetector] 알림 큐에 작업 추가: eventId=${event.id}`);
 }

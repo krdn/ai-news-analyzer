@@ -17,6 +17,7 @@ import { analyzeSentiment } from "./analyzer/sentiment";
 import { processDeepAnalysisBatch } from "./analyzer/deep-analysis";
 import { aggregateComments } from "./snapshot/aggregator";
 import { detectSentimentAnomaly } from "./event-detector";
+import { formatEventAlert, sendTelegramMessage } from "./notifier/telegram";
 import type { SourceType } from "@prisma/client";
 
 // --- 크롤러 플러그인 등록 ---
@@ -279,6 +280,71 @@ const deepAnalysisWorker = new Worker(
   { connection: redis, concurrency: 1 }
 );
 
+// --- Alert Worker ---
+// 알림 워커: 이벤트 감지 시 등록된 알림 규칙에 따라 Telegram 발송
+const alertWorker = new Worker(
+  QUEUE_NAMES.ALERT,
+  async (job) => {
+    const { eventId, celebrityId, celebrityName } = job.data as {
+      eventId: string;
+      celebrityId: string;
+      celebrityName: string;
+    };
+
+    const event = await prisma.event.findUnique({ where: { id: eventId } });
+    if (!event) {
+      console.warn(`[Alert] 이벤트를 찾을 수 없음: ${eventId}`);
+      return;
+    }
+
+    // 해당 셀러브리티의 활성 알림 규칙 조회
+    const alerts = await prisma.alert.findMany({
+      where: { celebrityId, enabled: true },
+    });
+
+    for (const alert of alerts) {
+      // 방향 필터링: sentiment_drop이면 하락만, sentiment_spike이면 상승만
+      const isDropped = event.sentimentAfter < event.sentimentBefore;
+      if (alert.alertType === "sentiment_drop" && !isDropped) continue;
+      if (alert.alertType === "sentiment_spike" && isDropped) continue;
+
+      // 임계값 필터링: impactScore가 threshold 미만이면 무시
+      if (event.impactScore < alert.threshold) continue;
+
+      if (alert.channel === "telegram") {
+        try {
+          const message = formatEventAlert(
+            {
+              title: event.title,
+              sentimentBefore: event.sentimentBefore,
+              sentimentAfter: event.sentimentAfter,
+              impactScore: event.impactScore,
+              eventDate: event.eventDate.toISOString(),
+            },
+            celebrityName
+          );
+          await sendTelegramMessage(message);
+          console.log(
+            `[Alert] Telegram 발송 완료: alertId=${alert.id}, eventId=${eventId}`
+          );
+        } catch (err) {
+          console.error(
+            `[Alert] Telegram 발송 실패: alertId=${alert.id}`,
+            err instanceof Error ? err.message : err
+          );
+        }
+      }
+
+      // 마지막 트리거 시각 업데이트
+      await prisma.alert.update({
+        where: { id: alert.id },
+        data: { lastTriggeredAt: new Date() },
+      });
+    }
+  },
+  { connection: redis, concurrency: 1 }
+);
+
 // --- 스케줄러: DB 기반 자동 크롤링 ---
 async function setupSchedules(): Promise<void> {
   console.log("[Scheduler] 기존 반복 작업 정리 중...");
@@ -350,6 +416,10 @@ deepAnalysisWorker.on("failed", (job, err) => {
   console.error(`[DeepAnalysis] 작업 실패: ${job?.id}`, err.message);
 });
 
+alertWorker.on("failed", (job, err) => {
+  console.error(`[Alert] 작업 실패: ${job?.id}`, err.message);
+});
+
 // --- Graceful Shutdown ---
 async function shutdown() {
   console.log("[Worker] 종료 시그널 수신, 워커 종료 중...");
@@ -358,6 +428,7 @@ async function shutdown() {
     analysisWorker.close(),
     deepAnalysisWorker.close(),
     snapshotWorker.close(),
+    alertWorker.close(),
   ]);
 
   // Playwright 브라우저 정리
@@ -381,3 +452,4 @@ console.log(`  - Crawl Worker (concurrency: 2, rate limit: 1/2s)`);
 console.log(`  - Analysis Worker (concurrency: 3)`);
 console.log(`  - Deep Analysis Worker (concurrency: 1, GPU 보호)`);
 console.log(`  - Snapshot Worker (concurrency: 1)`);
+console.log(`  - Alert Worker (concurrency: 1)`);
