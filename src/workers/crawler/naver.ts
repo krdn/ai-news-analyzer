@@ -1,5 +1,11 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
+import type {
+  CrawlerPlugin,
+  CrawlerResult,
+  ParsedArticle as CrawlerParsedArticle,
+  ParsedComment as CrawlerParsedComment,
+} from "./types";
 
 // --- 타입 정의 ---
 
@@ -147,6 +153,51 @@ export async function fetchNaverComments(
     // 댓글 API 실패 시 빈 배열 반환 (기사는 정상 처리)
     console.warn(`댓글 가져오기 실패: ${articleUrl}`);
     return [];
+  }
+}
+
+// --- CrawlerPlugin 구현 ---
+
+/** CrawlerPlugin 인터페이스를 구현한 네이버 크롤러 */
+export class NaverCrawlerPlugin implements CrawlerPlugin {
+  sourceType = "NAVER" as const;
+
+  async crawl(
+    celebrityId: string,
+    keywords: string[]
+  ): Promise<CrawlerResult> {
+    const articles: CrawlerParsedArticle[] = [];
+    const comments = new Map<string, CrawlerParsedComment[]>();
+
+    for (const keyword of keywords) {
+      const fetched = await fetchNaverNews(keyword, celebrityId);
+
+      for (const article of fetched) {
+        articles.push({
+          celebrityId: article.celebrityId,
+          sourceType: article.sourceType,
+          sourceUrl: article.sourceUrl,
+          title: article.title,
+          content: article.content,
+          publishedAt: article.publishedAt,
+        });
+
+        const articleComments = await fetchNaverComments(article.sourceUrl);
+        if (articleComments.length > 0) {
+          comments.set(
+            article.sourceUrl,
+            articleComments.map((c) => ({
+              content: c.content,
+              author: c.author,
+              likes: c.likes,
+              publishedAt: c.publishedAt,
+            }))
+          );
+        }
+      }
+    }
+
+    return { articles, comments };
   }
 }
 

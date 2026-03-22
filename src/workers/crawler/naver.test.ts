@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { parseNaverSearchResponse, parseNaverComments } from "./naver";
+import { NaverCrawlerPlugin } from "./naver";
 
 describe("네이버 뉴스 크롤러", () => {
   it("네이버 검색 API 응답을 파싱한다", () => {
@@ -72,5 +73,12 @@ describe("네이버 뉴스 크롤러", () => {
   it("빈 댓글 목록을 처리한다", () => {
     const comments = parseNaverComments([]);
     expect(comments).toHaveLength(0);
+  });
+});
+
+describe("NaverCrawlerPlugin", () => {
+  it("sourceType이 NAVER이다", () => {
+    const plugin = new NaverCrawlerPlugin();
+    expect(plugin.sourceType).toBe("NAVER");
   });
 });
