@@ -8,3 +8,10 @@ export type {
   CreateCelebrityInput,
   UpdateCelebrityInput,
 } from "./model/types";
+
+// UI 컴포넌트
+export { CelebrityCard } from "./ui/celebrity-card";
+export { CelebrityForm } from "./ui/celebrity-form";
+
+// API 훅
+export { useCelebrities, useCelebrity } from "./api/use-celebrities";

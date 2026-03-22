@@ -1,65 +1,99 @@
-import Image from "next/image";
+import Link from "next/link";
+import { prisma } from "@/shared/lib/prisma";
+import { CATEGORY_LABELS } from "@/entities/celebrity";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
-export default function Home() {
+export default async function DashboardPage() {
+  const celebrities = await prisma.celebrity.findMany({
+    include: {
+      _count: { select: { articles: true, snapshots: true } },
+      snapshots: {
+        where: { periodType: "DAILY" },
+        orderBy: { periodStart: "desc" },
+        take: 1,
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-zinc-100">대시보드</h2>
+        <p className="text-sm text-zinc-500">
+          등록된 셀럽의 여론 감성을 확인하세요.
+        </p>
+      </div>
+
+      {celebrities.length === 0 ? (
+        <Card className="border-zinc-800 bg-zinc-900">
+          <CardContent className="py-12 text-center">
+            <p className="text-zinc-400">
+              등록된 셀럽이 없습니다.{" "}
+              <Link href="/admin" className="text-blue-400 hover:underline">
+                셀럽 관리
+              </Link>
+              에서 추가해 주세요.
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {celebrities.map((celeb) => {
+            const latest = celeb.snapshots[0];
+            return (
+              <Link key={celeb.id} href={`/celebrity/${celeb.id}`}>
+                <Card className="cursor-pointer border-zinc-800 bg-zinc-900 transition-colors hover:border-zinc-700 hover:bg-zinc-800/80">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-zinc-100">
+                        {celeb.name}
+                      </CardTitle>
+                      <Badge variant="outline" className="text-zinc-400">
+                        {CATEGORY_LABELS[celeb.category]}
+                      </Badge>
+                    </div>
+                    {celeb.description && (
+                      <CardDescription className="line-clamp-1">
+                        {celeb.description}
+                      </CardDescription>
+                    )}
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-zinc-500">
+                        기사 {celeb._count.articles}건
+                      </span>
+                      {latest ? (
+                        <span
+                          className={
+                            latest.avgScore > 0
+                              ? "text-green-400"
+                              : latest.avgScore < 0
+                                ? "text-red-400"
+                                : "text-zinc-400"
+                          }
+                        >
+                          감성 {latest.avgScore.toFixed(2)}
+                        </span>
+                      ) : (
+                        <span className="text-zinc-600">데이터 없음</span>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      )}
     </div>
   );
 }
