@@ -42,9 +42,23 @@ docker compose up -d postgres redis  # DB/Redis 시작
 - `DATABASE_URL` — PostgreSQL 연결
 - `REDIS_URL` — Redis 연결
 - `NAVER_CLIENT_ID` / `NAVER_CLIENT_SECRET` — 네이버 검색 API
+- `YOUTUBE_API_KEY` — YouTube Data API v3
+- `X_BEARER_TOKEN` — X(트위터) API v2
+- `META_APP_ID` / `META_APP_SECRET` / `META_PAGE_TOKEN` — Meta Graph API
+
+## 크롤러 플러그인 아키텍처
+`src/workers/crawler/` — CrawlerPlugin 인터페이스 기반
+| 소스 | 파일 | 수집 주기 |
+|------|------|----------|
+| 네이버 | `naver.ts` | 30분 |
+| YouTube | `youtube.ts` | 1시간 |
+| X(트위터) | `twitter.ts` | 2시간 |
+| Meta | `meta.ts` | 2시간 |
+| 디시인사이드 | `dcinside.ts` | 1시간 |
 
 ## 개발 단계
-- Phase 1 (현재): 기반 + 네이버 뉴스 MVP ✅
-- Phase 2: 소스 확장 + 심층 AI 분석
+- Phase 1: 기반 + 네이버 뉴스 MVP ✅
+- Phase 2A (현재): 크롤러 소스 확장 ✅
+- Phase 2B: Ollama LLM 심층 분석
 - Phase 3: 추적 & 비교 기능
 - Phase 4: 고도화
