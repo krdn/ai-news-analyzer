@@ -135,6 +135,12 @@ export class TwitterCrawlerPlugin implements CrawlerPlugin {
     celebrityId: string,
     keywords: string[]
   ): Promise<CrawlerResult> {
+    const bearerToken = process.env.X_BEARER_TOKEN;
+    if (!bearerToken) {
+      console.warn("[X] X_BEARER_TOKEN 미설정, 건너뜀");
+      return { articles: [], comments: new Map() };
+    }
+
     const articles: ParsedArticle[] = [];
     // Free tier에서는 reply/conversation 검색 불가
     const comments = new Map<string, ParsedComment[]>();

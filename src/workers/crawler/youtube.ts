@@ -161,6 +161,12 @@ export class YouTubeCrawlerPlugin implements CrawlerPlugin {
     celebrityId: string,
     keywords: string[]
   ): Promise<CrawlerResult> {
+    const apiKey = process.env.YOUTUBE_API_KEY;
+    if (!apiKey) {
+      console.warn("[YouTube] YOUTUBE_API_KEY 미설정, 건너뜀");
+      return { articles: [], comments: new Map() };
+    }
+
     const articles: CrawlerParsedArticle[] = [];
     const comments = new Map<string, CrawlerParsedComment[]>();
 

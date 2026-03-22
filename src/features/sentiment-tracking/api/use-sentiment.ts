@@ -11,7 +11,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
  */
 export function useSentiment(
   celebrityId: string | null,
-  period: "HOURLY" | "DAILY" | "WEEKLY" = "DAILY",
+  period: "HOURLY" | "DAILY" | "WEEKLY" = "HOURLY",
   days: number = 30
 ) {
   const { data, error, isLoading, mutate } = useSWR<SentimentResponse>(

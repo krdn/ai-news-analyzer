@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const { celebrityId } = await params;
   const { searchParams } = new URL(request.url);
-  const period = searchParams.get("period") ?? "DAILY";
+  const period = searchParams.get("period") ?? "HOURLY";
   const days = parseInt(searchParams.get("days") ?? "30");
 
   const cacheKey = getCacheKey("celeb", celebrityId, "sentiment", period, String(days));

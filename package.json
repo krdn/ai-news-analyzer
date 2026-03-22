@@ -9,7 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "tsx-bundle-worker": "esbuild src/workers/index.ts --bundle --platform=node --outfile=dist/worker.js --alias:@=./src --external:@prisma/client --external:bullmq --external:ioredis --external:axios --external:cheerio",
+    "tsx-bundle-worker": "esbuild src/workers/index.ts --bundle --platform=node --outfile=dist/worker.js --alias:@=./src --external:@prisma/client --external:bullmq --external:ioredis --external:axios --external:cheerio --external:playwright --external:playwright-core",
     "db:seed": "npx tsx prisma/seed.ts",
     "worker": "tsx src/workers/index.ts",
     "worker:dev": "tsx watch src/workers/index.ts"

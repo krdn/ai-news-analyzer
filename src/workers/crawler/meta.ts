@@ -133,6 +133,12 @@ export class MetaCrawlerPlugin implements CrawlerPlugin {
     celebrityId: string,
     keywords: string[]
   ): Promise<CrawlerResult> {
+    const accessToken = process.env.META_PAGE_TOKEN;
+    if (!accessToken) {
+      console.warn("[Meta] META_PAGE_TOKEN 미설정, 건너뜀");
+      return { articles: [], comments: new Map() };
+    }
+
     const articles: CrawlerParsedArticle[] = [];
     const comments = new Map<string, CrawlerParsedComment[]>();
 
