@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { Worker } from "bullmq";
 import { redis } from "../shared/lib/redis";
 import {
