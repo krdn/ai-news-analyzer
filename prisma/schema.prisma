@@ -57,6 +57,7 @@ model Celebrity {
   sources   CelebritySource[]
   articles  Article[]
   snapshots SentimentSnapshot[]
+  events    Event[]
 
   @@map("celebrities")
 }
@@ -133,4 +134,22 @@ model SentimentSnapshot {
 
   @@unique([celebrityId, periodType, periodStart, sourceType], name: "snapshot_unique")
   @@map("sentiment_snapshots")
+}
+
+model Event {
+  id              String   @id @default(uuid()) @db.Uuid
+  celebrityId     String   @map("celebrity_id") @db.Uuid
+  title           String   @db.VarChar(300)
+  description     String?
+  eventDate       DateTime @map("event_date")
+  detectedAt      DateTime @default(now()) @map("detected_at")
+  sentimentBefore Float    @map("sentiment_before")
+  sentimentAfter  Float    @map("sentiment_after")
+  impactScore     Float    @map("impact_score")
+  autoDetected    Boolean  @default(true) @map("auto_detected")
+
+  celebrity Celebrity @relation(fields: [celebrityId], references: [id], onDelete: Cascade)
+
+  @@index([celebrityId, eventDate])
+  @@map("events")
 }
