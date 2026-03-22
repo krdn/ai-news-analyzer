@@ -1,6 +1,11 @@
 import { Worker } from "bullmq";
 import { redis } from "../shared/lib/redis";
-import { QUEUE_NAMES, crawlQueue, snapshotQueue } from "../shared/lib/queue";
+import {
+  QUEUE_NAMES,
+  crawlQueue,
+  deepAnalysisQueue,
+  snapshotQueue,
+} from "../shared/lib/queue";
 import { prisma } from "../shared/lib/prisma";
 import { crawlerRegistry, processCrawlResult } from "./crawler/registry";
 import { NaverCrawlerPlugin } from "./crawler/naver";
@@ -9,6 +14,7 @@ import { TwitterCrawlerPlugin } from "./crawler/twitter";
 import { MetaCrawlerPlugin } from "./crawler/meta";
 import { DcinsideCrawlerPlugin } from "./crawler/dcinside";
 import { analyzeSentiment } from "./analyzer/sentiment";
+import { processDeepAnalysisBatch } from "./analyzer/deep-analysis";
 import { aggregateComments } from "./snapshot/aggregator";
 import type { SourceType } from "@prisma/client";
 
@@ -109,7 +115,7 @@ const analysisWorker = new Worker(
       },
     });
 
-    // 각 댓글에 대해 감성 분석 수행 및 DB 업데이트
+    // 각 댓글에 대해 1단계 감성 분석 수행 및 DB 업데이트
     for (const comment of comments) {
       const result = analyzeSentiment(comment.content);
       await prisma.comment.update({
@@ -118,14 +124,35 @@ const analysisWorker = new Worker(
           sentimentScore: result.score,
           sentimentLabel: result.label,
           sentimentConfidence: result.confidence,
+          analysisDepth: "BASIC",
         },
       });
     }
 
-    console.log(`[Analysis] 분석 완료: ${comments.length}개 댓글 처리`);
+    console.log(`[Analysis] 1단계 분석 완료: ${comments.length}개 댓글 처리`);
 
-    // 분석 완료 후 스냅샷 큐에 추가
-    await snapshotQueue.add("create-snapshot", { celebrityId });
+    // 2단계 심층 분석 대상 판단: 낮은 신뢰도 또는 긴 댓글
+    const hasDeepTargets = comments.some(
+      (c) =>
+        analyzeSentiment(c.content).confidence < 0.7 || c.content.length > 50
+    );
+
+    if (hasDeepTargets) {
+      const celebrity = await prisma.celebrity.findUnique({
+        where: { id: celebrityId },
+        select: { name: true },
+      });
+      await deepAnalysisQueue.add("deep-analyze", {
+        articleId,
+        celebrityId,
+        celebrityName: celebrity?.name ?? "알 수 없음",
+      });
+      console.log(
+        `[Analysis] 심층 분석 대상 발견 → deepAnalysisQueue 전달`
+      );
+    } else {
+      await snapshotQueue.add("create-snapshot", { celebrityId });
+    }
   },
   {
     connection: redis,
@@ -222,6 +249,26 @@ const snapshotWorker = new Worker(
   }
 );
 
+// --- Deep Analysis Worker ---
+// 심층 분석 워커: Ollama LLM 기반 2단계 분석 (GPU 보호: concurrency 1)
+const deepAnalysisWorker = new Worker(
+  QUEUE_NAMES.DEEP_ANALYSIS,
+  async (job) => {
+    const { articleId, celebrityId, celebrityName } = job.data as {
+      articleId: string;
+      celebrityId: string;
+      celebrityName: string;
+    };
+    console.log(`[DeepAnalysis] 심층 분석 시작: article=${articleId}`);
+    const result = await processDeepAnalysisBatch(articleId, celebrityName);
+    console.log(
+      `[DeepAnalysis] 완료: 분석 ${result.analyzed}개, 스킵 ${result.skipped}개, 실패 ${result.failed}개`
+    );
+    await snapshotQueue.add("create-snapshot", { celebrityId });
+  },
+  { connection: redis, concurrency: 1 }
+);
+
 // --- 스케줄러: DB 기반 자동 크롤링 ---
 async function setupSchedules(): Promise<void> {
   console.log("[Scheduler] 기존 반복 작업 정리 중...");
@@ -289,12 +336,17 @@ snapshotWorker.on("failed", (job, err) => {
   console.error(`[Snapshot] 작업 실패: ${job?.id}`, err.message);
 });
 
+deepAnalysisWorker.on("failed", (job, err) => {
+  console.error(`[DeepAnalysis] 작업 실패: ${job?.id}`, err.message);
+});
+
 // --- Graceful Shutdown ---
 async function shutdown() {
   console.log("[Worker] 종료 시그널 수신, 워커 종료 중...");
   await Promise.all([
     crawlWorker.close(),
     analysisWorker.close(),
+    deepAnalysisWorker.close(),
     snapshotWorker.close(),
   ]);
 
@@ -317,4 +369,5 @@ setupSchedules().catch((err) => {
 console.log("[Worker] 모든 워커 시작 완료");
 console.log(`  - Crawl Worker (concurrency: 2, rate limit: 1/2s)`);
 console.log(`  - Analysis Worker (concurrency: 3)`);
+console.log(`  - Deep Analysis Worker (concurrency: 1, GPU 보호)`);
 console.log(`  - Snapshot Worker (concurrency: 1)`);

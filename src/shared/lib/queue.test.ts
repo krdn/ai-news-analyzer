@@ -7,4 +7,8 @@ describe("Queue 설정", () => {
     expect(QUEUE_NAMES.ANALYSIS).toBe("analysis");
     expect(QUEUE_NAMES.SNAPSHOT).toBe("snapshot");
   });
+
+  it("DEEP_ANALYSIS 큐 이름이 정의되어 있다", () => {
+    expect(QUEUE_NAMES.DEEP_ANALYSIS).toBe("deep-analysis");
+  });
 });
